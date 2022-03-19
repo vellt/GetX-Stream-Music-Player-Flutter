@@ -1,6 +1,6 @@
 # Stream Music Player with GetX 🎵
 
-Hi there! 😁 Here you can view the steps to play network music through a simple app based on a GetX MVC architecture. 
+Hi there! 😁 Here you can view the steps to play network music through a simple app based on a GetX MVC architecture. Try the <a target="_blank" href="https://github.com/vellt/GetX-Stream-Music-Player-Flutter/releases/tag/v0.0.1">released file<a>.
 
 ![visitors](https://visitor-badge.glitch.me/badge?right_color=teal&page_id=vellt/GetX-Stream-Music-Player-Flutter) 
 ![Web 1280 – 1]( https://img.shields.io/badge/made%20with-flutter-blue?style=flat)
@@ -14,6 +14,7 @@ Hi there! 😁 Here you can view the steps to play network music through a simpl
 - `Sizer`: <a target="_blank" href="https://pub.dev/packages/sizer">https://pub.dev/packages/sizer</a>
 - `AudioPlayers`: <a target="_blank" href="https://pub.dev/packages/flutter_spinkit">https://pub.dev/packages/audioplayers</a>
 - `GetX`: <a target="_blank" href="https://pub.dev/packages/flutter_spinkit">https://pub.dev/packages/get</a>
+- `Music`: <a target="_blank" href="https://www.jamendo.com/">https://www.jamendo.com/</a>
 
 ## Pull request
 If you want to improve it, fork it and send a <a target="_blank" href="https://github.com/vellt/GetX-Stream-Music-Player-Flutter/pulls">Pull request</a>.  <br> Be a Contributor! 
