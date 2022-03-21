@@ -14,16 +14,16 @@ class HomePage extends StatelessWidget {
         backgroundColor: Color(0xFF1C1B1B),
         body: Padding(
           padding: EdgeInsets.only(
-            top: 60.sp,
-            left: 10.sp,
+            top: 50.sp,
+            left: 16.sp,
             bottom: 10.sp,
-            right: 10.sp,
+            right: 16.sp,
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Padding(
-                padding: EdgeInsets.only(left: 10.sp, bottom: 15.sp),
+                padding: EdgeInsets.only(left: 10.sp, bottom: 20.sp),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -83,17 +83,32 @@ class HomePage extends StatelessWidget {
                                     padding:
                                         EdgeInsets.symmetric(horizontal: 13.sp),
                                     child: Container(
-                                      decoration: BoxDecoration(
-                                        image: DecorationImage(
-                                          image: NetworkImage(playerController
-                                              .streams[index].picture!),
-                                        ),
+                                      height: 35.sp,
+                                      width: 35.sp,
+                                      child: ClipRRect(
                                         borderRadius: BorderRadius.all(
-                                          Radius.circular(15.sp),
+                                            Radius.circular(15.sp)),
+                                        child: Image.network(
+                                          playerController
+                                              .streams[index].picture!,
+                                          frameBuilder: (BuildContext context,
+                                              Widget child,
+                                              int? frame,
+                                              bool wasSynchronouslyLoaded) {
+                                            return (frame != null)
+                                                ? child
+                                                : Padding(
+                                                    padding:
+                                                        EdgeInsets.all(8.sp),
+                                                    child:
+                                                        CircularProgressIndicator(
+                                                      strokeWidth: 5.sp,
+                                                      color: Color(0xFF71B77A),
+                                                    ),
+                                                  );
+                                          },
                                         ),
                                       ),
-                                      width: 35.sp,
-                                      height: 35.sp,
                                     ),
                                   ),
                                   Expanded(
