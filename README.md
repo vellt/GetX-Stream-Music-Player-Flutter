@@ -14,6 +14,7 @@ Hi there! 😁 Here you can view the steps to play network music through a simpl
 - `Sizer`: <a target="_blank" href="https://pub.dev/packages/sizer">https://pub.dev/packages/sizer</a>
 - `AudioPlayers`: <a target="_blank" href="https://pub.dev/packages/flutter_spinkit">https://pub.dev/packages/audioplayers</a>
 - `GetX`: <a target="_blank" href="https://pub.dev/packages/flutter_spinkit">https://pub.dev/packages/get</a>
+- `url_launcher`: <a target="_blank" href="https://pub.dev/packages/url_launcher">https://pub.dev/packages/url_launcher</a>
 - `Music`: <a target="_blank" href="https://www.jamendo.com/">https://www.jamendo.com/</a>
 
 ## Pull request
