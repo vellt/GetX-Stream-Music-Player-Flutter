@@ -115,6 +115,15 @@ class HomePage extends StatelessWidget {
                                                     ),
                                                   );
                                           },
+                                          errorBuilder:
+                                              (context, error, stackTrace) {
+                                            return Container(
+                                              color: Color(0xFF71B77A),
+                                              child: Center(
+                                                child: Text("404"),
+                                              ),
+                                            );
+                                          },
                                         ),
                                       ),
                                     ),
