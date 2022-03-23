@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:get/get.dart';
 import 'package:music_player_fluttter/controllers/player_controller.dart';
 import 'package:sizer/sizer.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class HomePage extends StatelessWidget {
   HomePage({Key? key}) : super(key: key);
@@ -14,7 +16,7 @@ class HomePage extends StatelessWidget {
         backgroundColor: Color(0xFF1C1B1B),
         body: Padding(
           padding: EdgeInsets.only(
-            top: 50.sp,
+            top: 5.h,
             left: 16.sp,
             bottom: 10.sp,
             right: 16.sp,
@@ -36,13 +38,19 @@ class HomePage extends StatelessWidget {
                         color: Colors.white,
                       ),
                     ),
-                    Text(
-                      "GitHub/vellt",
-                      style: TextStyle(
-                        fontSize: 17.sp,
-                        fontFamily: "Segoe UI",
-                        fontWeight: FontWeight.bold,
-                        color: Color(0xFF71B77A),
+                    GestureDetector(
+                      onTap: () async {
+                        if (await canLaunch("https://github.com/vellt"))
+                          await launch("https://github.com/vellt");
+                      },
+                      child: Text(
+                        "GitHub/vellt",
+                        style: TextStyle(
+                          fontSize: 17.sp,
+                          fontFamily: "Segoe UI",
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xFF71B77A),
+                        ),
                       ),
                     ),
                   ],
@@ -172,86 +180,97 @@ class HomePage extends StatelessWidget {
                   );
                 }),
               ),
-              Column(
-                children: [
-                  Padding(
-                    padding:
-                        EdgeInsets.only(right: 15.sp, left: 15.sp, top: 5.sp),
-                    child: GetX<PlayerController>(builder: (controller) {
-                      return Row(
-                        children: [
-                          Text(
-                            controller.getPositionAsFormatSting,
-                            style: TextStyle(
-                              fontSize: 15.sp,
-                              color: Colors.white,
-                            ),
-                          ),
-                          Expanded(
-                            child: Slider(
-                                activeColor: Color(0xFF71B77A),
-                                inactiveColor: Color(0xFFEFEFEF),
-                                value: controller.getPositionAsDouble,
-                                min: 0.0,
-                                max: controller.getDurationAsDouble,
-                                onChanged: (double value) {
-                                  controller.setPositionValue = value;
-                                }),
-                          ),
-                          Obx(
-                            () => Text(
-                              controller.getDurationAsFormatSting,
+              Container(
+                decoration: BoxDecoration(
+                  boxShadow: <BoxShadow>[
+                    BoxShadow(
+                      color: Color(0xFF1C1B1B),
+                      blurRadius: 15.sp,
+                      offset: Offset(0, 0),
+                      spreadRadius: 30.sp,
+                    ),
+                  ],
+                ),
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.only(right: 15.sp, left: 15.sp),
+                      child: GetX<PlayerController>(builder: (controller) {
+                        return Row(
+                          children: [
+                            Text(
+                              controller.getPositionAsFormatSting,
                               style: TextStyle(
                                 fontSize: 15.sp,
                                 color: Colors.white,
                               ),
                             ),
-                          ),
-                        ],
-                      );
-                    }),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(
-                        right: 10.sp, left: 10.sp, top: 5.sp, bottom: 16.sp),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        IconButton(
-                            onPressed: () {
-                              playerController.back();
-                            },
-                            iconSize: 35.sp,
-                            icon: Icon(
-                              Icons.skip_previous,
-                              color: Colors.white,
-                            )),
-                        IconButton(
-                            onPressed: () {
-                              playerController.smartPlay();
-                            },
-                            iconSize: 60.sp,
-                            icon: Obx(
-                              () => Icon(
-                                (playerController.isPlay.value)
-                                    ? Icons.pause
-                                    : Icons.play_arrow,
-                                color: Colors.white,
+                            Expanded(
+                              child: Slider(
+                                  activeColor: Color(0xFF71B77A),
+                                  inactiveColor: Color(0xFFEFEFEF),
+                                  value: controller.getPositionAsDouble,
+                                  min: 0.0,
+                                  max: controller.getDurationAsDouble,
+                                  onChanged: (double value) {
+                                    controller.setPositionValue = value;
+                                  }),
+                            ),
+                            Obx(
+                              () => Text(
+                                controller.getDurationAsFormatSting,
+                                style: TextStyle(
+                                  fontSize: 15.sp,
+                                  color: Colors.white,
+                                ),
                               ),
-                            )),
-                        IconButton(
-                            onPressed: () {
-                              playerController.next();
-                            },
-                            iconSize: 35.sp,
-                            icon: Icon(
-                              Icons.skip_next,
-                              color: Colors.white,
-                            )),
-                      ],
+                            ),
+                          ],
+                        );
+                      }),
                     ),
-                  )
-                ],
+                    Padding(
+                      padding: EdgeInsets.only(
+                          right: 10.sp, left: 10.sp, top: 5.sp, bottom: 16.sp),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          IconButton(
+                              onPressed: () {
+                                playerController.back();
+                              },
+                              iconSize: 35.sp,
+                              icon: Icon(
+                                Icons.skip_previous,
+                                color: Colors.white,
+                              )),
+                          IconButton(
+                              onPressed: () {
+                                playerController.smartPlay();
+                              },
+                              iconSize: 60.sp,
+                              icon: Obx(
+                                () => Icon(
+                                  (playerController.isPlay.value)
+                                      ? Icons.pause
+                                      : Icons.play_arrow,
+                                  color: Colors.white,
+                                ),
+                              )),
+                          IconButton(
+                              onPressed: () {
+                                playerController.next();
+                              },
+                              iconSize: 35.sp,
+                              icon: Icon(
+                                Icons.skip_next,
+                                color: Colors.white,
+                              )),
+                        ],
+                      ),
+                    )
+                  ],
+                ),
               )
             ],
           ),
