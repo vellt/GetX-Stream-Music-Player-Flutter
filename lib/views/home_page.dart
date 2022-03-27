@@ -1,9 +1,11 @@
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:get/get.dart';
 import 'package:music_player_fluttter/controllers/player_controller.dart';
 import 'package:sizer/sizer.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:music_player_fluttter/extensions/duration_extensions.dart';
 
 class HomePage extends StatelessWidget {
   HomePage({Key? key}) : super(key: key);
@@ -56,9 +58,9 @@ class HomePage extends StatelessWidget {
                   ],
                 ),
               ),
-              Expanded(
-                child: Obx(() {
-                  return ListView.builder(
+              Flexible(
+                child: Obx(
+                  () => ListView.builder(
                     itemCount: playerController.streams.length,
                     physics: BouncingScrollPhysics(),
                     itemBuilder: (context, index) {
@@ -69,18 +71,18 @@ class HomePage extends StatelessWidget {
                             Radius.circular(10.sp),
                           ),
                           onTap: () {
-                            playerController.setCurrentStreamIndex = index;
+                            playerController.currentStreamIndex.value = index;
                             playerController.play();
                           },
                           child: Obx(
                             () => Container(
                               height: 52.sp,
                               decoration: BoxDecoration(
-                                color:
-                                    (playerController.getCurrentStreamIndex ==
-                                            index)
-                                        ? Color(0xFF2A2A2A)
-                                        : Colors.transparent,
+                                color: (playerController
+                                            .currentStreamIndex.value ==
+                                        index)
+                                    ? Color(0xFF2A2A2A)
+                                    : Colors.transparent,
                                 borderRadius: BorderRadius.all(
                                   Radius.circular(10.sp),
                                 ),
@@ -186,8 +188,8 @@ class HomePage extends StatelessWidget {
                         ),
                       );
                     },
-                  );
-                }),
+                  ),
+                ),
               ),
               Container(
                 decoration: BoxDecoration(
@@ -200,15 +202,15 @@ class HomePage extends StatelessWidget {
                     ),
                   ],
                 ),
-                child: Column(
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.only(right: 15.sp, left: 15.sp),
-                      child: GetX<PlayerController>(builder: (controller) {
-                        return Row(
+                child: Obx(
+                  () => Column(
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.only(right: 15.sp, left: 15.sp),
+                        child: Row(
                           children: [
                             Text(
-                              controller.getPositionAsFormatSting,
+                              playerController.position.value.timeFormat,
                               style: TextStyle(
                                 fontSize: 15.sp,
                                 color: Colors.white,
@@ -218,33 +220,37 @@ class HomePage extends StatelessWidget {
                               child: Slider(
                                   activeColor: Color(0xFF71B77A),
                                   inactiveColor: Color(0xFFEFEFEF),
-                                  value: controller.getPositionAsDouble,
+                                  value: playerController
+                                      .position.value.inSeconds
+                                      .toDouble(),
                                   min: 0.0,
-                                  max: controller.getDurationAsDouble,
+                                  max: playerController.duration.value.inSeconds
+                                          .toDouble() +
+                                      1.0,
                                   onChanged: (double value) {
-                                    controller.setPositionValue = value;
+                                    playerController.setPositionValue = value;
                                   }),
                             ),
-                            Obx(
-                              () => Text(
-                                controller.getDurationAsFormatSting,
-                                style: TextStyle(
-                                  fontSize: 15.sp,
-                                  color: Colors.white,
-                                ),
+                            Text(
+                              playerController.duration.value.timeFormat,
+                              style: TextStyle(
+                                fontSize: 15.sp,
+                                color: Colors.white,
                               ),
                             ),
                           ],
-                        );
-                      }),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.only(
-                          right: 10.sp, left: 10.sp, top: 5.sp, bottom: 16.sp),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          IconButton(
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(
+                            right: 10.sp,
+                            left: 10.sp,
+                            top: 5.sp,
+                            bottom: 16.sp),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            IconButton(
                               onPressed: () {
                                 playerController.back();
                               },
@@ -252,35 +258,37 @@ class HomePage extends StatelessWidget {
                               icon: Icon(
                                 Icons.skip_previous,
                                 color: Colors.white,
-                              )),
-                          IconButton(
+                              ),
+                            ),
+                            IconButton(
                               onPressed: () {
                                 playerController.smartPlay();
                               },
                               iconSize: 60.sp,
-                              icon: Obx(
-                                () => Icon(
-                                  (playerController.isPlay.value)
-                                      ? Icons.pause
-                                      : Icons.play_arrow,
-                                  color: Colors.white,
-                                ),
-                              )),
-                          IconButton(
-                              onPressed: () {
-                                playerController.next();
-                              },
-                              iconSize: 35.sp,
                               icon: Icon(
-                                Icons.skip_next,
+                                (playerController.playState.value ==
+                                        PlayerState.PLAYING)
+                                    ? Icons.pause
+                                    : Icons.play_arrow,
                                 color: Colors.white,
-                              )),
-                        ],
-                      ),
-                    )
-                  ],
+                              ),
+                            ),
+                            IconButton(
+                                onPressed: () {
+                                  playerController.next();
+                                },
+                                iconSize: 35.sp,
+                                icon: Icon(
+                                  Icons.skip_next,
+                                  color: Colors.white,
+                                )),
+                          ],
+                        ),
+                      )
+                    ],
+                  ),
                 ),
-              )
+              ),
             ],
           ),
         ),

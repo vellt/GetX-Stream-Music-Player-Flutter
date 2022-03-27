@@ -4,30 +4,33 @@ import 'package:music_player_fluttter/controllers/stream_controller.dart';
 import 'package:music_player_fluttter/models/stream.dart';
 
 class PlayerController extends GetxController {
-  final Rx<AudioPlayer> _advancedPlayer = AudioPlayer().obs;
-  Rx<Duration> _duration = Duration().obs;
-  Rx<Duration> _position = Duration().obs;
+  final AudioPlayer _advancedPlayer = AudioPlayer();
+
+  Rx<Duration> duration = Duration(seconds: 0).obs;
+  Rx<Duration> position = Duration(seconds: 0).obs;
   final Rx<int> currentStreamIndex = 0.obs;
-  final Rx<bool> isPlay = false.obs;
+  final Rx<PlayerState> playState = PlayerState.STOPPED.obs;
   var streams = <Stream>[].obs;
 
   @override
   void onInit() {
     // TODO: implement onInit
     super.onInit();
+
     final streamController = Get.put(StreamController());
     streams = streamController.streams;
-    _advancedPlayer.value.onDurationChanged.listen((d) => _duration.value = d);
-    _advancedPlayer.value.onAudioPositionChanged
-        .listen((p) => _position.value = p);
-    _advancedPlayer.value.onPlayerStateChanged.listen((PlayerState event) {
-      isPlay.value = (event == PlayerState.PLAYING) ? true : false;
-    });
+
+    _advancedPlayer.onDurationChanged.listen((d) => duration.value = d);
+    _advancedPlayer.onAudioPositionChanged.listen((p) => position.value = p);
+    _advancedPlayer.onPlayerStateChanged
+        .listen((PlayerState state) => playState.value = state);
+    _advancedPlayer.onPlayerCompletion
+        .listen((event) => position.value = duration.value);
   }
 
   //play
   void smartPlay() async {
-    if (isPlay.value) {
+    if (playState.value == PlayerState.PLAYING) {
       pause();
     } else {
       resume();
@@ -41,22 +44,22 @@ class PlayerController extends GetxController {
 
   //play
   void resume() async {
-    int result = await _advancedPlayer.value
-        .play(streams[currentStreamIndex.value].music!);
+    int result =
+        await _advancedPlayer.play(streams[currentStreamIndex.value].music!);
     if (result == 1) ; //success
   }
 
   //pause
   void pause() async {
-    int result = await _advancedPlayer.value.pause();
+    int result = await _advancedPlayer.pause();
     if (result == 1) ; //success
   }
 
   //stop
   void stop() async {
-    int result = await _advancedPlayer.value.stop();
+    int result = await _advancedPlayer.stop();
     if (result == 1) {
-      _position.value = Duration(seconds: 0);
+      position.value = Duration(seconds: 0);
     }
   }
 
@@ -71,20 +74,6 @@ class PlayerController extends GetxController {
     play();
   }
 
-  String _format(Duration d) {
-    String minute =
-        int.parse(d.toString().split('.').first.padLeft(8, "0").split(':')[1])
-            .toString();
-    String second = d.toString().split('.').first.padLeft(8, "0").split(':')[2];
-    return ("$minute:$second");
-  }
-
   set setPositionValue(double value) =>
-      _advancedPlayer.value.seek(Duration(seconds: value.toInt()));
-  set setCurrentStreamIndex(index) => currentStreamIndex.value = index;
-  int get getCurrentStreamIndex => currentStreamIndex.value;
-  double get getDurationAsDouble => _duration.value.inSeconds.toDouble();
-  String get getDurationAsFormatSting => _format(_duration.value);
-  double get getPositionAsDouble => _position.value.inSeconds.toDouble();
-  String get getPositionAsFormatSting => _format(_position.value);
+      _advancedPlayer.seek(Duration(seconds: value.toInt()));
 }
